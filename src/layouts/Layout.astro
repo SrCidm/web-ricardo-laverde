@@ -1,0 +1,93 @@
+---
+// Layout Principal - Ricardo Laverde
+// Incluye SEO, meta tags, fuentes y estructura base
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  lang?: 'es' | 'en';
+}
+
+const {
+  title = 'Ricardo Laverde | Escultor Contemporáneo',
+  description = 'Escultor contemporáneo especializado en arte cinético, obras lumínicas y esculturas en metacrilato. Explora el espacio, la luz y la forma.',
+  image = '/images/og-image.jpg',
+  lang = 'es',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <!-- Meta básicos -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- Preconnect para Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0A0A0A" />
+    
+    <!-- Idiomas alternativos -->
+    <link rel="alternate" hreflang="es" href={`${Astro.site}`} />
+    <link rel="alternate" hreflang="en" href={`${Astro.site}en/`} />
+    <link rel="alternate" hreflang="x-default" href={`${Astro.site}`} />
+  </head>
+  
+  <body class="bg-laverde-black text-laverde-white min-h-screen flex flex-col">
+    <!-- Contenido principal -->
+    <slot />
+    
+    <!-- Script para animaciones en scroll -->
+    <script>
+      // Intersection Observer para animaciones
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, observerOptions);
+
+      // Observar elementos con clase animate-on-scroll
+      document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+        observer.observe(el);
+      });
+    </script>
+  </body>
+</html>

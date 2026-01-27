@@ -1,0 +1,231 @@
+---
+// Gallery Component - Grid de obras con lightbox
+
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Generar array de 67 obras
+const totalObras = 67;
+const obras = Array.from({ length: totalObras }, (_, i) => ({
+  id: i + 1,
+  src: `/images/obras/obra-${String(i + 1).padStart(2, '0')}.jpeg`,
+  alt: `Obra ${i + 1} - Ricardo Laverde`,
+}));
+
+// Props opcionales para limitar cantidad mostrada
+interface Props {
+  limit?: number;
+  showTitle?: boolean;
+}
+
+const { limit, showTitle = true } = Astro.props;
+
+// Si hay límite, mostrar solo esas obras
+const displayObras = limit ? obras.slice(0, limit) : obras;
+---
+
+<section id="obras" class="py-24 md:py-32 bg-laverde-gray">
+  <div class="section-container">
+    
+    {showTitle && (
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="section-title mx-auto">{t('works.title')}</h2>
+        <p class="text-laverde-white/60 mt-6 max-w-2xl mx-auto">
+          {t('works.subtitle')}
+        </p>
+      </div>
+    )}
+    
+    <!-- Grid de obras -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-16">
+      {displayObras.map((obra, index) => (
+        <div 
+          class="artwork-card aspect-square animate-on-scroll cursor-pointer"
+          data-index={index}
+          style={`animation-delay: ${(index % 8) * 50}ms`}
+        >
+          <img 
+            src={obra.src} 
+            alt={obra.alt}
+            loading={index < 8 ? "eager" : "lazy"}
+            decoding="async"
+            class="w-full h-full object-cover transition-transform duration-700 ease-out"
+          />
+          <div class="artwork-card-overlay">
+            <div class="w-full flex justify-between items-end">
+              <span class="text-sm font-display">Obra {obra.id}</span>
+              <svg class="w-5 h-5 text-laverde-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    {limit && limit < totalObras && (
+      <div class="text-center mt-12">
+        <a href="/obras" class="btn-secondary">
+          {t('works.viewAll')} ({totalObras})
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div 
+  id="lightbox" 
+  class="fixed inset-0 z-50 bg-laverde-black/95 opacity-0 pointer-events-none transition-opacity duration-300"
+  aria-hidden="true"
+>
+  <!-- Botón cerrar -->
+  <button 
+    id="lightbox-close"
+    class="absolute top-6 right-6 z-10 w-12 h-12 flex items-center justify-center text-laverde-white/70 hover:text-laverde-white transition-colors"
+    aria-label="Cerrar"
+  >
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+  
+  <!-- Navegación -->
+  <button 
+    id="lightbox-prev"
+    class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center text-laverde-white/70 hover:text-laverde-white transition-colors"
+    aria-label="Anterior"
+  >
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+  
+  <button 
+    id="lightbox-next"
+    class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center text-laverde-white/70 hover:text-laverde-white transition-colors"
+    aria-label="Siguiente"
+  >
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+  
+  <!-- Contenedor de imagen -->
+  <div class="absolute inset-0 flex items-center justify-center p-12 md:p-20">
+    <img 
+      id="lightbox-image" 
+      src="" 
+      alt=""
+      class="max-w-full max-h-full object-contain transition-transform duration-300"
+    />
+  </div>
+  
+  <!-- Contador -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-laverde-white/50 text-sm font-body">
+    <span id="lightbox-counter">1 / 67</span>
+  </div>
+</div>
+
+<script define:vars={{ totalObras }}>
+  // Lightbox functionality
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  const artworkCards = document.querySelectorAll('.artwork-card');
+  
+  let currentIndex = 0;
+  
+  // Generar URL de imagen
+  function getImageUrl(index) {
+    const num = String(index + 1).padStart(2, '0');
+    return `/images/obras/obra-${num}.jpeg`;
+  }
+  
+  // Abrir lightbox
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightboxImage();
+    lightbox.classList.remove('opacity-0', 'pointer-events-none');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+  }
+  
+  // Cerrar lightbox
+  function closeLightbox() {
+    lightbox.classList.add('opacity-0', 'pointer-events-none');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+  }
+  
+  // Actualizar imagen
+  function updateLightboxImage() {
+    lightboxImage.src = getImageUrl(currentIndex);
+    lightboxImage.alt = `Obra ${currentIndex + 1} - Ricardo Laverde`;
+    lightboxCounter.textContent = `${currentIndex + 1} / ${totalObras}`;
+  }
+  
+  // Navegación
+  function goToPrev() {
+    currentIndex = currentIndex > 0 ? currentIndex - 1 : totalObras - 1;
+    updateLightboxImage();
+  }
+  
+  function goToNext() {
+    currentIndex = currentIndex < totalObras - 1 ? currentIndex + 1 : 0;
+    updateLightboxImage();
+  }
+  
+  // Event listeners
+  artworkCards.forEach((card, index) => {
+    card.addEventListener('click', () => openLightbox(index));
+  });
+  
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxPrev?.addEventListener('click', goToPrev);
+  lightboxNext?.addEventListener('click', goToNext);
+  
+  // Click fuera de la imagen cierra
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target.parentElement === lightbox) {
+      closeLightbox();
+    }
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (lightbox?.classList.contains('pointer-events-none')) return;
+    
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') goToPrev();
+    if (e.key === 'ArrowRight') goToNext();
+  });
+</script>
+
+<style>
+  /* Hover effect para las cards */
+  .artwork-card:hover img {
+    transform: scale(1.05);
+  }
+  
+  /* Lightbox image zoom on load */
+  #lightbox-image {
+    animation: lightboxZoomIn 0.3s ease-out;
+  }
+  
+  @keyframes lightboxZoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>

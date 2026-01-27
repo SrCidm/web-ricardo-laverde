@@ -1,0 +1,153 @@
+---
+// Header.astro
+// Versión corregida: Mejor control de visibilidad y z-index
+
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+// Detectar si es home normalizando la ruta (quitando trailing slash para evitar errores)
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isHomepage = pathname === '/' || pathname === '/en';
+
+const navItems = lang === 'es' ? [
+  { label: 'Obras', path: '/obras' },
+  { label: 'Sobre Mí', path: '/sobre-mi' },
+  { label: 'Exposiciones', path: '/exposiciones' },
+  { label: 'Contacto', path: '/contacto' },
+] : [
+  { label: 'Works', path: '/en/works' },
+  { label: 'About', path: '/en/about' },
+  { label: 'Exhibitions', path: '/en/exhibitions' },
+  { label: 'Contact', path: '/en/contact' },
+];
+
+const homePath = lang === 'es' ? '/' : '/en/';
+const switchLangPath = lang === 'es' ? '/en/' : '/';
+const switchLangLabel = lang === 'es' ? 'EN' : 'ES';
+---
+
+<header 
+  id="main-header"
+  class:list={[
+    "fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ease-out",
+  ]}
+>
+  <div class="section-container">
+    <nav class="flex items-center justify-between h-20 md:h-24">
+      
+      <a href={homePath} class="text-xl md:text-2xl font-display text-laverde-white relative z-[70] hover:text-laverde-blue transition-colors">
+        Ricardo <span class="font-normal italic">Laverde Laguna</span>
+      </a>
+      
+      <div class="hidden md:flex items-center gap-8">
+        {navItems.map((item) => (
+          <a href={item.path} class="text-sm uppercase tracking-widest text-laverde-white/80 hover:text-laverde-blue transition-colors">{item.label}</a>
+        ))}
+        <a href={switchLangPath} class="ml-4 px-3 py-1 border border-laverde-white/30 text-laverde-white/80 text-xs uppercase hover:border-laverde-blue transition-colors">{switchLangLabel}</a>
+      </div>
+      
+      <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2 relative z-[70] group" aria-label="Menú">
+        <span class="menu-line w-6 h-px bg-laverde-white transition-all duration-300 group-hover:bg-laverde-blue"></span>
+        <span class="menu-line w-6 h-px bg-laverde-white transition-all duration-300 group-hover:bg-laverde-blue"></span>
+        <span class="menu-line w-4 h-px bg-laverde-white transition-all duration-300 ml-auto group-hover:bg-laverde-blue"></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div id="mobile-menu" class="mobile-menu-overlay">
+  <nav class="h-full flex flex-col items-center justify-center gap-8 px-8">
+    {navItems.map((item, index) => (
+      <a 
+        href={item.path} 
+        class="mobile-nav-link text-3xl font-display text-laverde-white hover:text-laverde-blue transition-all duration-300"
+        style={`--delay: ${index * 100}ms`}
+      >
+        {item.label}
+      </a>
+    ))}
+    <a href={switchLangPath} class="mt-8 px-6 py-3 border border-laverde-white/50 text-laverde-white text-sm uppercase hover:border-laverde-blue transition-colors">{lang === 'es' ? 'English' : 'Español'}</a>
+  </nav>
+</div>
+
+<style>
+  /* Header Styles */
+  #main-header.header-visible { opacity: 1; transform: translateY(0); backdrop-filter: blur(8px); }
+  #main-header.scrolled { background: rgba(0, 0, 0, 0.9); }
+
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #0a0a0a;
+    z-index: 90; /* Debajo del botón hamburguesa (z-70 no, z-100 header... ajustado para estar encima de todo menos header container) */
+    opacity: 0;
+    visibility: hidden; /* CRÍTICO: Hace que no estorbe cuando está cerrado */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Estado Abierto */
+  .mobile-menu-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Animación Links */
+  .mobile-menu-overlay.is-open .mobile-nav-link {
+    animation: fadeSlideIn 0.6s ease-out forwards;
+    animation-delay: var(--delay);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  @keyframes fadeSlideIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Animación Botón */
+  #mobile-menu-btn.is-active .menu-line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  #mobile-menu-btn.is-active .menu-line:nth-child(2) { opacity: 0; }
+  #mobile-menu-btn.is-active .menu-line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); width: 1.5rem; }
+</style>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const header = document.getElementById('main-header');
+
+  function toggleMenu() {
+    const isOpen = menu?.classList.contains('is-open');
+    if (isOpen) {
+      btn?.classList.remove('is-active');
+      menu?.classList.remove('is-open');
+      document.body.style.overflow = '';
+    } else {
+      btn?.classList.add('is-active');
+      menu?.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  btn?.addEventListener('click', toggleMenu);
+
+  // Cerrar al hacer click en links
+  menu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      btn?.classList.remove('is-active');
+      menu?.classList.remove('is-open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Scroll effect
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) header?.classList.add('scrolled');
+    else header?.classList.remove('scrolled');
+  });
+
+  // Aparecer en Home
+  if (window.location.pathname === '/' || window.location.pathname === '/en/') {
+    setTimeout(() => header?.classList.add('header-visible'), 500);
+  }
+</script>

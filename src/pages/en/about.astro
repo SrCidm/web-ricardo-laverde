@@ -1,0 +1,212 @@
+---
+// About Page - English Version
+// Ricardo Laverde Laguna Biography
+
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const title = 'About | Ricardo Laverde Laguna';
+const description = 'Meet Ricardo Laverde Laguna, contemporary artist specialized in kinetic art. Trained in goldsmithing and architecture, he explores light, space and transparent materials.';
+---
+
+<Layout title={title} description={description} lang="en">
+  <Header />
+  
+  <main class="pt-24 relative z-20 bg-laverde-black">
+    
+    <!-- Page Hero -->
+    <section class="py-16 md:py-24">
+      <div class="section-container">
+        <div class="max-w-4xl mx-auto text-center">
+          <p class="text-sm uppercase tracking-[0.3em] text-laverde-blue mb-4 animate-fade-in">
+            Contemporary Artist
+          </p>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl mb-6 animate-fade-in" style="animation-delay: 0.1s">
+            Ricardo Laverde Laguna
+          </h1>
+          <p class="text-xl md:text-2xl text-laverde-white/70 font-light leading-relaxed animate-fade-in" style="animation-delay: 0.2s">
+            A life dedicated to exploring the intersection between light, space and form.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section 1: Intro with photo on the right -->
+    <section class="py-12 md:py-20">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="space-y-6 animate-on-scroll">
+            <blockquote class="text-2xl md:text-3xl font-display italic text-laverde-blue leading-relaxed">
+              "Movement is in the eyes of the beholder, not in the piece."
+            </blockquote>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              My name is <strong class="text-laverde-white">Ricardo Laverde Laguna</strong>, I am a 
+              contemporary artist specialized in kinetic art. My work explores the intersection between 
+              light, space and transparent materials, creating pieces that challenge the viewer's 
+              visual perception.
+            </p>
+          </div>
+          
+          <div class="relative animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-01.jpg" 
+                alt="Ricardo Laverde Laguna in his studio"
+                class="w-full max-w-md mx-auto lg:ml-auto rounded-sm"
+              />
+            </div>
+            <div class="absolute -bottom-4 -right-4 w-full max-w-md h-full bg-laverde-blue/20 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section 2: Origins -->
+    <section class="py-12 md:py-20 bg-laverde-gray/30">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="relative order-2 lg:order-1 animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-02.jpg" 
+                alt="Ricardo Laverde Laguna working"
+                class="w-full max-w-sm mx-auto lg:mr-auto rounded-sm"
+              />
+            </div>
+            <div class="absolute -bottom-4 -left-4 w-full max-w-sm h-full bg-laverde-red/20 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+          
+          <div class="space-y-6 order-1 lg:order-2 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">Origins</h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Son of an Italian metalworker known as <em>"Fabro"</em>, I grew up surrounded 
+              by the sound of metal and the transformation of materials. This artisan heritage 
+              planted in me a deep connection with manual work and three-dimensional creation.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              From a young age, I watched my father transform metal into functional and beautiful forms. 
+              That fascination with seeing something born from nothing never left me.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section 3: Training -->
+    <section class="py-12 md:py-20">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+          <div class="lg:col-span-2 space-y-6 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">Training</h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              My artistic path began in <strong class="text-laverde-white">goldsmithing</strong>, 
+              where I learned the precision and detail that characterize my current work.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Later, my studies in <strong class="text-laverde-white">architecture</strong> 
+              gave me a deep understanding of space, light and structures that 
+              today define my sculptural language.
+            </p>
+          </div>
+          
+          <div class="lg:col-span-3 relative animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-03.jpg" 
+                alt="Ricardo Laverde Laguna with one of his works"
+                class="w-full rounded-sm"
+              />
+            </div>
+            <div class="absolute -bottom-6 -right-6 w-full h-full bg-laverde-blue/15 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section 4: Kinetic Art -->
+    <section class="py-12 md:py-20 bg-laverde-gray/30">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="relative order-2 lg:order-1 animate-on-scroll">
+            <div class="relative z-10 transform lg:-rotate-2">
+              <img 
+                src="/images/artist/ricardo-04.jpg" 
+                alt="Ricardo Laverde Laguna explaining his process"
+                class="w-full max-w-md mx-auto rounded-sm"
+              />
+            </div>
+            <div class="absolute -bottom-4 -left-4 w-full max-w-md h-full bg-laverde-yellow/15 rounded-sm -z-0 hidden lg:block transform lg:-rotate-2"></div>
+          </div>
+          
+          <div class="space-y-6 order-1 lg:order-2 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">Kinetic Art</h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              I inscribe myself in the tradition of <strong class="text-laverde-white">kineticism</strong>, 
+              an artistic movement that explores movement and visual perception.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              My works are not static; they interact with light, space and the viewer, 
+              creating visual experiences that change according to the point of view and lighting.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Quick Facts -->
+    <section class="py-12 md:py-16 border-t border-b border-laverde-gray-light/20">
+      <div class="section-container">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center animate-on-scroll">
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Jávea</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Location</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Kinetic</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Style</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Light</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Element</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">∞</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Possibilities</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="py-24 bg-laverde-gray">
+      <div class="section-container text-center">
+        <h2 class="text-3xl md:text-4xl font-display mb-6 animate-on-scroll">
+          Want to know more about my work?
+        </h2>
+        <p class="text-laverde-white/60 mb-8 max-w-2xl mx-auto animate-on-scroll">
+          I'm available for inquiries about works, custom commissions and artistic collaborations.
+        </p>
+        <a href="/en/contact" class="btn-primary animate-on-scroll">
+          Contact
+        </a>
+      </div>
+    </section>
+    
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

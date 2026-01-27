@@ -1,0 +1,117 @@
+---
+// Contact Page - Ricardo Laverde Laguna
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import BackgroundFrame from '../../components/BackgroundFrame.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const ACCESS_KEY = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+const title = 'Contact | Ricardo Laverde Laguna';
+const description = 'Contact Ricardo Laverde Laguna for inquiries about artworks or collaborations.';
+---
+
+<Layout title={title} description={description} lang="en">
+  <BackgroundFrame />
+  <Header />
+  
+  <main class="pt-24 relative z-10 min-h-screen bg-laverde-black/20">
+    <section class="py-16 md:py-24 bg-laverde-black/80 backdrop-blur-sm">
+      <div class="section-container">
+        <div class="max-w-4xl mx-auto text-center">
+          <p class="text-sm uppercase tracking-[0.3em] text-laverde-blue mb-4">Let's Talk</p>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl mb-6">Contact</h1>
+          <p class="text-xl text-laverde-white/70 font-light leading-relaxed">
+            For inquiries regarding available works or artistic collaborations.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 md:py-24">
+      <div class="section-container">
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-laverde-black/40 border border-laverde-gray-light/20 p-8 md:p-12 backdrop-blur-md">
+            
+            <form id="contact-form" class="space-y-6">
+              <input type="hidden" name="access_key" value={ACCESS_KEY}>
+              <input type="hidden" name="subject" value="New Website Message">
+              <input type="hidden" name="from_name" value="Ricardo Laverde Web">
+              <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-sm uppercase tracking-widest text-laverde-white/60 mb-2">Name *</label>
+                  <input type="text" id="name" name="name" required class="w-full bg-laverde-black/50 border border-laverde-gray-light/30 px-4 py-3 text-laverde-white focus:outline-none focus:border-laverde-blue transition-colors">
+                </div>
+                <div>
+                  <label for="email" class="block text-sm uppercase tracking-widest text-laverde-white/60 mb-2">Email *</label>
+                  <input type="email" id="email" name="email" required class="w-full bg-laverde-black/50 border border-laverde-gray-light/30 px-4 py-3 text-laverde-white focus:outline-none focus:border-laverde-blue transition-colors">
+                </div>
+              </div>
+
+              <div>
+                <label for="interest" class="block text-sm uppercase tracking-widest text-laverde-white/60 mb-2">Interest</label>
+                <select id="interest" name="interest" class="w-full bg-laverde-black/50 border border-laverde-gray-light/30 px-4 py-3 text-laverde-white focus:outline-none focus:border-laverde-blue transition-colors">
+                  <option value="acquisition">Artwork Acquisition</option>
+                  <option value="exhibition">Collaboration / Exhibition</option>
+                  <option value="others">Others</option>
+                </select>
+              </div>
+              
+              <div>
+                <label for="message" class="block text-sm uppercase tracking-widest text-laverde-white/60 mb-2">Message *</label>
+                <textarea id="message" name="message" rows="5" required class="w-full bg-laverde-black/50 border border-laverde-gray-light/30 px-4 py-3 text-laverde-white focus:outline-none focus:border-laverde-blue transition-colors" placeholder="Write your message here..."></textarea>
+              </div>
+
+              <button type="submit" id="submit-btn" class="btn-primary w-full sm:w-auto">Send Message</button>
+            </form>
+            
+            <div id="result" class="mt-6 text-center text-laverde-white hidden"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<script is:inline>
+  const form = document.getElementById('contact-form');
+  const result = document.getElementById('result');
+  const btn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    btn.disabled = true;
+    result.innerHTML = "Sending...";
+    result.classList.remove('hidden');
+
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: json
+        })
+        .then(async (response) => {
+            if (response.status == 200) {
+                result.innerHTML = "Thank you! Your message has been sent successfully.";
+                form.reset();
+            } else {
+                result.innerHTML = "Error sending message. Please try again.";
+            }
+        })
+        .catch(error => {
+            result.innerHTML = "Something went wrong. Please try again.";
+        })
+        .finally(() => {
+            btn.disabled = false;
+            setTimeout(() => { result.classList.add('hidden'); }, 5000);
+        });
+  });
+</script>

@@ -1,0 +1,127 @@
+---
+// Hero.astro - Versión Fluida y Sin Bloqueos
+import { getLangFromUrl } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+
+const TOTAL_FRAMES = 25;
+const FRAME_PREFIX = 'ezgif-frame-';
+const FRAME_EXTENSION = 'jpg';
+const FRAMES_FOLDER = '/frames/';
+const FRAME_PADDING = 3;
+
+const frameUrls: string[] = [];
+for (let i = 1; i <= TOTAL_FRAMES; i++) {
+  const paddedNum = String(i).padStart(FRAME_PADDING, '0');
+  frameUrls.push(`${FRAMES_FOLDER}${FRAME_PREFIX}${paddedNum}.${FRAME_EXTENSION}`);
+}
+---
+
+<div id="stopmotion-container" class="fixed inset-0 z-0 bg-laverde-black">
+  <canvas id="stopmotion-canvas" class="w-full h-full object-cover opacity-0 transition-opacity duration-700"></canvas>
+  <div class="absolute inset-0 bg-laverde-black/20"></div>
+</div>
+
+<section id="hero" class="relative z-10 h-[300vh]" aria-label="Hero section">
+  <div class="sticky top-0 h-screen w-full overflow-hidden pointer-events-none">
+    <div id="hero-controls" class="hero-controls opacity-100 pointer-events-auto">
+      <div class="hero-buttons-container"></div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ TOTAL_FRAMES, frameUrls }}>
+  const canvas = document.getElementById('stopmotion-canvas');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const hero = document.getElementById('hero');
+  const images = [];
+  let currentFrameIndex = -1; // Empezamos en -1 para forzar el primer render
+  let ticking = false;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth * window.devicePixelRatio;
+    canvas.height = window.innerHeight * window.devicePixelRatio;
+    if (currentFrameIndex !== -1) renderFrame(currentFrameIndex);
+  }
+
+  async function preloadImages() {
+    const promises = frameUrls.map((url, index) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          if (img.decode) {
+            img.decode().then(() => resolve(img)).catch(() => resolve(img));
+          } else {
+            resolve(img);
+          }
+        };
+        img.onerror = () => resolve(null);
+        images[index] = img;
+      });
+    });
+
+    await Promise.all(promises);
+    canvas.classList.remove('opacity-0');
+    updateScroll(); // Renderizar el frame inicial según posición actual
+  }
+
+  function renderFrame(index) {
+    const safeIndex = Math.max(1, Math.min(index, TOTAL_FRAMES));
+    const img = images[safeIndex - 1];
+    
+    if (!img || !img.complete) return;
+
+    const canvasRatio = canvas.width / canvas.height;
+    const imgRatio = img.width / img.height;
+    let drawWidth, drawHeight, x, y;
+
+    if (canvasRatio > imgRatio) {
+      drawWidth = canvas.width;
+      drawHeight = canvas.width / imgRatio;
+      x = 0;
+      y = (canvas.height - drawHeight) / 2;
+    } else {
+      drawWidth = canvas.height * imgRatio;
+      drawHeight = canvas.height;
+      x = (canvas.width - drawWidth) / 2;
+      y = 0;
+    }
+
+    ctx.drawImage(img, x, y, drawWidth, drawHeight);
+    currentFrameIndex = safeIndex;
+  }
+
+  function updateScroll() {
+    const heroRect = hero.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    // Calculamos cuánto del hero ha pasado por pantalla
+    // 0 es el inicio del hero, 1 es cuando el final del hero llega arriba
+    const totalScrollable = hero.offsetHeight - windowHeight;
+    const currentScroll = -heroRect.top;
+    
+    let progress = currentScroll / totalScrollable;
+    
+    // Clamp del progreso entre 0 y 1
+    progress = Math.max(0, Math.min(1, progress));
+    
+    const frameIndex = Math.floor(progress * (TOTAL_FRAMES - 1)) + 1;
+
+    if (frameIndex !== currentFrameIndex) {
+      renderFrame(frameIndex);
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Inicialización
+  resizeCanvas();
+  preloadImages();
+  window.addEventListener('resize', resizeCanvas);
+</script>

@@ -1,0 +1,284 @@
+---
+// Página Sobre Mí - Ricardo Laverde
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const title = 'Sobre Mí | Ricardo Laverde';
+const description = 'Conoce a Ricardo Laverde, artista contemporáneo especializado en arte cinético. Formado en orfebrería y arquitectura, explora la luz, el espacio y los materiales transparentes.';
+---
+
+<Layout title={title} description={description} lang="es">
+  <Header />
+  
+  <main class="pt-24 relative z-20 bg-laverde-black">
+    
+    <!-- Hero de la página -->
+    <section class="py-16 md:py-24">
+      <div class="section-container">
+        <div class="max-w-4xl mx-auto text-center">
+          <p class="text-sm uppercase tracking-[0.3em] text-laverde-blue mb-4 animate-fade-in">
+            Artista Contemporáneo
+          </p>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl mb-6 animate-fade-in" style="animation-delay: 0.1s">
+            Ricardo Laverde Laguna
+          </h1>
+          <p class="text-xl md:text-2xl text-laverde-white/70 font-light leading-relaxed animate-fade-in" style="animation-delay: 0.2s">
+            Una vida dedicada a explorar la intersección entre la luz, el espacio y la forma.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección 1: Intro con foto a la derecha -->
+    <section class="py-12 md:py-20">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <!-- Texto -->
+          <div class="space-y-6 animate-on-scroll">
+            <blockquote class="text-2xl md:text-3xl font-display italic text-laverde-blue leading-relaxed">
+              "El movimiento está en los ojos de quien observa, no en la pieza."
+            </blockquote>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Mi nombre es <strong class="text-laverde-white">Ricardo Laverde Laguna</strong>, soy un escultor 
+              contemporáneo especializado en arte cinético. Mi trabajo explora la intersección entre 
+              la luz, el espacio y los materiales transparentes, creando piezas que desafían la 
+              percepción visual del espectador.
+            </p>
+          </div>
+          
+          <!-- Foto con sombra -->
+          <div class="relative animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-01.jpg" 
+                alt="Ricardo Laverde en su estudio"
+                class="w-full max-w-md mx-auto lg:ml-auto rounded-sm"
+              />
+            </div>
+            <!-- Sombra decorativa -->
+            <div class="absolute -bottom-4 -right-4 w-full max-w-md h-full bg-laverde-blue/20 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección 2: Orígenes con foto a la izquierda -->
+    <section class="py-12 md:py-20 bg-laverde-gray/30">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <!-- Foto con sombra (izquierda) -->
+          <div class="relative order-2 lg:order-1 animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-02.jpg" 
+                alt="Ricardo Laverde trabajando"
+                class="w-full max-w-sm mx-auto lg:mr-auto rounded-sm"
+              />
+            </div>
+            <!-- Sombra decorativa -->
+            <div class="absolute -bottom-4 -left-4 w-full max-w-sm h-full bg-laverde-red/20 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+          
+          <!-- Texto -->
+          <div class="space-y-6 order-1 lg:order-2 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">
+              Orígenes
+            </h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Hijo de un metalúrgico italiano conocido como <em>"Fabro"</em>, crecí rodeado 
+              del sonido del metal y la transformación de los materiales. Esta herencia artesanal 
+              sembró en mí una profunda conexión con el trabajo manual y la creación tridimensional.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Desde pequeño, observaba cómo mi padre transformaba el metal en formas funcionales 
+              y bellas. Esa fascinación por ver nacer algo de la nada nunca me abandonó.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección 3: Formación con foto a la derecha (más grande) -->
+    <section class="py-12 md:py-20">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+          <!-- Texto (ocupa 2 columnas) -->
+          <div class="lg:col-span-2 space-y-6 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">
+              Formación
+            </h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Mi camino artístico comenzó en la <strong class="text-laverde-white">orfebrería</strong>, 
+              donde aprendí la precisión y el detalle que caracterizan mi obra actual.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Posteriormente, mis estudios en <strong class="text-laverde-white">arquitectura</strong> 
+              me proporcionaron una comprensión profunda del espacio, la luz y las estructuras que 
+              hoy definen mi lenguaje escultórico.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Esta combinación única de disciplinas me permite abordar cada obra desde múltiples 
+              perspectivas: la precisión del orfebre y la visión espacial del arquitecto.
+            </p>
+          </div>
+          
+          <!-- Foto grande con sombra (ocupa 3 columnas) -->
+          <div class="lg:col-span-3 relative animate-on-scroll">
+            <div class="relative z-10">
+              <img 
+                src="/images/artist/ricardo-03.jpg" 
+                alt="Ricardo Laverde con una de sus obras"
+                class="w-full rounded-sm"
+              />
+            </div>
+            <!-- Sombra decorativa -->
+            <div class="absolute -bottom-6 -right-6 w-full h-full bg-laverde-blue/15 rounded-sm -z-0 hidden lg:block"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección 4: Arte Cinético con foto a la izquierda -->
+    <section class="py-12 md:py-20 bg-laverde-gray/30">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <!-- Foto con sombra (izquierda) -->
+          <div class="relative order-2 lg:order-1 animate-on-scroll">
+            <div class="relative z-10 transform lg:-rotate-2">
+              <img 
+                src="/images/artist/ricardo-04.jpg" 
+                alt="Ricardo Laverde explicando su proceso"
+                class="w-full max-w-md mx-auto rounded-sm"
+              />
+            </div>
+            <!-- Sombra decorativa -->
+            <div class="absolute -bottom-4 -left-4 w-full max-w-md h-full bg-laverde-yellow/15 rounded-sm -z-0 hidden lg:block transform lg:-rotate-2"></div>
+          </div>
+          
+          <!-- Texto -->
+          <div class="space-y-6 order-1 lg:order-2 animate-on-scroll">
+            <h2 class="text-2xl md:text-3xl font-display text-laverde-white">
+              El Arte Cinético
+            </h2>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Me inscribo en la tradición del <strong class="text-laverde-white">cinetismo</strong>, 
+              un movimiento artístico que explora el movimiento y la percepción visual.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Mis obras no son estáticas; interactúan con la luz, el espacio y el espectador, 
+              creando experiencias visuales que cambian según el punto de vista y la iluminación.
+            </p>
+            <p class="text-lg text-laverde-white/70 leading-relaxed">
+              Cada pieza invita a moverse, a descubrir nuevos ángulos, nuevas formas que emergen 
+              y desaparecen según la perspectiva del observador.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección 5: Materiales y Filosofía -->
+    <section class="py-12 md:py-20">
+      <div class="section-container">
+        <div class="max-w-4xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 animate-on-scroll">
+            <!-- Materiales -->
+            <div class="space-y-4 p-8 border border-laverde-gray-light/30 rounded-sm">
+              <div class="w-12 h-12 bg-laverde-blue/20 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-6 h-6 text-laverde-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-display text-laverde-white">Materiales</h3>
+              <p class="text-laverde-white/70 leading-relaxed">
+                El <strong class="text-laverde-white">plexiglass</strong>, el 
+                <strong class="text-laverde-white">metacrilato</strong> y la 
+                <strong class="text-laverde-white">luz LED</strong> son los protagonistas de mi obra. 
+                En los materiales transparentes encuentro posibilidades infinitas.
+              </p>
+            </div>
+            
+            <!-- Filosofía -->
+            <div class="space-y-4 p-8 border border-laverde-gray-light/30 rounded-sm">
+              <div class="w-12 h-12 bg-laverde-red/20 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-6 h-6 text-laverde-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-display text-laverde-white">Filosofía</h3>
+              <p class="text-laverde-white/70 leading-relaxed">
+                Para mí, lo <strong class="text-laverde-white">orgánico</strong> prevalece sobre lo rectilíneo. 
+                Mis formas fluyen, se curvan y danzan en el espacio. Cada pieza nace de puntos 
+                flotando en el vacío, conectados por líneas que solo yo puedo ver.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Datos rápidos -->
+    <section class="py-12 md:py-16 border-t border-b border-laverde-gray-light/20">
+      <div class="section-container">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center animate-on-scroll">
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Jávea</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Ubicación</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Cinético</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Estilo</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">Luz</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Elemento</p>
+          </div>
+          <div>
+            <p class="text-3xl md:text-4xl font-display text-laverde-blue mb-2">∞</p>
+            <p class="text-sm uppercase tracking-widest text-laverde-white/50">Posibilidades</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA Contacto -->
+    <section class="py-24 bg-laverde-gray">
+      <div class="section-container text-center">
+        <h2 class="text-3xl md:text-4xl font-display mb-6 animate-on-scroll">
+          ¿Quieres conocer más sobre mi trabajo?
+        </h2>
+        <p class="text-laverde-white/60 mb-8 max-w-2xl mx-auto animate-on-scroll">
+          Estoy disponible para consultas sobre obras, encargos personalizados y colaboraciones artísticas.
+        </p>
+        <a href="/contacto" class="btn-primary animate-on-scroll">
+          Contactar
+        </a>
+      </div>
+    </section>
+    
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  /* Animación fade in */
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

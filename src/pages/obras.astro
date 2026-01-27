@@ -1,0 +1,23 @@
+---
+// Página de Obras - Ricardo Laverde Laguna
+// Galería completa con las 67 obras - SIN fondo frame (Gallery es gris)
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Gallery from '../components/Gallery.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const title = 'Obras | Ricardo Laverde Laguna';
+const description = 'Explora la colección completa de esculturas y obras de arte cinético de Ricardo Laverde Laguna. Metacrilato, luz LED y formas que desafían la percepción.';
+---
+
+<Layout title={title} description={description} lang="es">
+  <Header />
+  
+  <main class="pt-24">
+    <Gallery />
+  </main>
+  
+  <Footer />
+</Layout>

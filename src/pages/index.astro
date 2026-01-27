@@ -1,17 +1,92 @@
 ---
+// Página Principal - Ricardo Laverde Laguna
+// Artista Contemporáneo | Arte Cinético
 
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Gallery from '../components/Gallery.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+// Meta tags para SEO
+const title = 'Ricardo Laverde Laguna | Arte Contemporáneo';
+const description = 'Explora el universo artístico de Ricardo Laverde Laguna, artista contemporáneo especializado en arte cinético, obras lumínicas y esculturas en metacrilato. Jávea, España.';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title={title} description={description} lang="es">
+  <Header />
+  
+  <main>
+    <!-- Hero con stop motion scroll-driven -->
+    <Hero />
+    
+    <!-- Sección de Obras - Muestra 12 en homepage -->
+    <div class="relative z-20">
+      <Gallery limit={12} />
+    </div>
+    
+    <!-- Sección About Preview -->
+    <section class="relative z-20 py-24 md:py-32 bg-laverde-black/80 backdrop-blur-sm">
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <!-- Imagen del artista -->
+          <div class="animate-on-scroll">
+            <div class="aspect-[4/5] overflow-hidden">
+              <img 
+                src="/images/artist/ricardo-01.jpg" 
+                alt="Ricardo Laverde Laguna - Artista Contemporáneo"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          
+          <!-- Texto -->
+          <div class="animate-on-scroll space-y-6">
+            <h2 class="section-title">Sobre el Artista</h2>
+            
+            <blockquote class="text-2xl md:text-3xl font-display italic text-laverde-blue leading-relaxed">
+              "El movimiento está en los ojos de quien observa, no en la pieza."
+            </blockquote>
+            
+            <p class="text-laverde-white/70 leading-relaxed">
+              Ricardo Laverde Laguna es un artista contemporáneo cuyo trabajo explora la intersección entre la luz, 
+              el espacio y los materiales transparentes. Formado en orfebrería y arquitectura, su obra se 
+              inscribe en la tradición del arte cinético, creando piezas que desafían la percepción visual.
+            </p>
+            
+            <a href="/sobre-mi" class="btn-primary inline-block">
+              Conocer más
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Sección Contacto CTA -->
+    <section class="relative z-20 py-24 md:py-32 bg-laverde-black/80 backdrop-blur-sm overflow-hidden">
+      <!-- Decoración de fondo -->
+      <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-0 right-0 w-96 h-96 border border-laverde-blue rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 border border-laverde-red rounded-full translate-y-1/2 -translate-x-1/2"></div>
+      </div>
+      
+      <div class="section-container relative z-10">
+        <div class="text-center max-w-2xl mx-auto animate-on-scroll">
+          <h2 class="text-3xl md:text-4xl font-display mb-6">
+            ¿Interesado en una obra?
+          </h2>
+          <p class="text-laverde-white/60 mb-8">
+            Para consultas sobre obras disponibles, encargos personalizados o colaboraciones artísticas.
+          </p>
+          <a href="/contacto" class="btn-primary">
+            Contactar
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>

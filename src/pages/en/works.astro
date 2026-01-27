@@ -1,0 +1,23 @@
+---
+// Works Page - Ricardo Laverde Laguna (English)
+// Full gallery with 67 works - NO background frame (gray gallery)
+
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Gallery from '../../components/Gallery.astro';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+
+const title = 'Works | Ricardo Laverde Laguna';
+const description = 'Explore the complete collection of sculptures and kinetic art by Ricardo Laverde Laguna. Methacrylate, LED light and forms that challenge perception.';
+---
+
+<Layout title={title} description={description} lang="en">
+  <Header />
+  
+  <main class="pt-24">
+    <Gallery />
+  </main>
+  
+  <Footer />
+</Layout>
