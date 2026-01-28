@@ -1,5 +1,8 @@
 ---
-// Hero.astro - Versión Fluida y Sin Bloqueos
+// Hero.astro - Versión con Efecto "Encendido" en Móvil
+// Desktop: Stop motion con scroll (25 frames)
+// Móvil: Efecto de encendido (B/N oscuro → Color iluminado)
+
 import { getLangFromUrl } from '../i18n/ui';
 const lang = getLangFromUrl(Astro.url);
 
@@ -9,6 +12,9 @@ const FRAME_EXTENSION = 'jpg';
 const FRAMES_FOLDER = '/frames/';
 const FRAME_PADDING = 3;
 
+// Último frame para el efecto móvil
+const LAST_FRAME = `${FRAMES_FOLDER}${FRAME_PREFIX}${String(TOTAL_FRAMES).padStart(FRAME_PADDING, '0')}.${FRAME_EXTENSION}`;
+
 const frameUrls: string[] = [];
 for (let i = 1; i <= TOTAL_FRAMES; i++) {
   const paddedNum = String(i).padStart(FRAME_PADDING, '0');
@@ -16,112 +22,444 @@ for (let i = 1; i <= TOTAL_FRAMES; i++) {
 }
 ---
 
-<div id="stopmotion-container" class="fixed inset-0 z-0 bg-laverde-black">
+<!-- ========================================
+     VERSIÓN DESKTOP: Stop Motion con Canvas
+     ======================================== -->
+<div id="stopmotion-container" class="fixed inset-0 z-0 bg-laverde-black hidden md:block">
   <canvas id="stopmotion-canvas" class="w-full h-full object-cover opacity-0 transition-opacity duration-700"></canvas>
   <div class="absolute inset-0 bg-laverde-black/20"></div>
 </div>
 
-<section id="hero" class="relative z-10 h-[300vh]" aria-label="Hero section">
-  <div class="sticky top-0 h-screen w-full overflow-hidden pointer-events-none">
-    <div id="hero-controls" class="hero-controls opacity-100 pointer-events-auto">
-      <div class="hero-buttons-container"></div>
+<!-- ========================================
+     VERSIÓN MÓVIL: Efecto Encendido
+     ======================================== -->
+<div id="mobile-hero-container" class="fixed inset-0 z-0 bg-laverde-black md:hidden overflow-hidden">
+  <!-- Imagen con filtros CSS para el efecto -->
+  <div id="mobile-artwork" class="mobile-artwork">
+    <img 
+      src={LAST_FRAME}
+      alt="Ricardo Laverde Laguna - Arte Cinético"
+      class="w-full h-full object-cover"
+    />
+  </div>
+  
+  <!-- Overlay oscuro que se desvanece -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+  
+  <!-- Efecto de "glow" LED que aparece -->
+  <div id="mobile-glow" class="mobile-glow"></div>
+  
+  <!-- Partículas de luz -->
+  <div id="light-particles" class="light-particles">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<!-- ========================================
+     SECCIÓN HERO (altura para scroll)
+     ======================================== -->
+<section id="hero" class="relative z-10 h-screen md:h-[300vh]">
+  <div class="sticky top-0 h-screen w-full overflow-hidden">
+    
+    <div id="hero-controls" class="hero-controls">
+      <div class="hero-buttons-container">
+        
+        <a 
+          href="#obras" 
+          class="hero-btn group"
+          data-tooltip={lang === 'es' ? 'Obras' : 'Works'}
+          aria-label="Obras"
+        >
+          <div class="hero-btn-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+          </div>
+        </a>
+        
+        <a 
+          href={lang === 'es' ? '/contacto' : '/en/contact'}
+          class="hero-btn group"
+          data-tooltip={lang === 'es' ? 'Contacto' : 'Contact'}
+          aria-label="Contacto"
+        >
+          <div class="hero-btn-icon hero-btn-icon-red">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ========================================
+     ESTILOS DEL EFECTO ENCENDIDO (MÓVIL)
+     ======================================== -->
+<style>
+  /* =============================================
+     EFECTO ENCENDIDO - ESTADO INICIAL (APAGADO)
+     ============================================= */
+  
+  .mobile-artwork {
+    position: absolute;
+    inset: 0;
+    /* Estado inicial: Blanco y negro, oscuro, blur sutil */
+    filter: grayscale(100%) brightness(0.3) blur(3px);
+    transform: scale(1.08);
+    transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mobile-artwork.is-on {
+    /* Estado encendido: Color completo, brillo normal, nítido */
+    filter: grayscale(0%) brightness(1) blur(0px);
+    transform: scale(1);
+  }
+  
+  /* Overlay oscuro con viñeta */
+  .mobile-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(10, 10, 10, 0.4) 0%, rgba(10, 10, 10, 0.95) 100%);
+    opacity: 1;
+    transition: opacity 3s ease-out;
+  }
+  
+  .mobile-overlay.is-on {
+    opacity: 0.15;
+  }
+  
+  /* Glow LED azul - efecto de luz cinematográfico */
+  .mobile-glow {
+    position: absolute;
+    inset: -100%;
+    background: 
+      radial-gradient(ellipse at 30% 20%, rgba(0, 102, 255, 0.4) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 80%, rgba(0, 102, 255, 0.3) 0%, transparent 40%),
+      radial-gradient(ellipse at center, rgba(0, 102, 255, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  
+  .mobile-glow.is-on {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Partículas de luz flotantes */
+  .light-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  
+  .light-particles span {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 102, 255, 0.9);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 
+      0 0 10px rgba(0, 102, 255, 0.8),
+      0 0 20px rgba(0, 102, 255, 0.6),
+      0 0 40px rgba(0, 102, 255, 0.4);
+  }
+  
+  .light-particles.is-on span {
+    animation: floatParticle 5s ease-in-out infinite;
+  }
+  
+  .light-particles span:nth-child(1) { left: 15%; top: 25%; animation-delay: 0s; }
+  .light-particles span:nth-child(2) { left: 85%; top: 15%; animation-delay: 0.8s; }
+  .light-particles span:nth-child(3) { left: 35%; top: 75%; animation-delay: 1.6s; }
+  .light-particles span:nth-child(4) { left: 75%; top: 65%; animation-delay: 2.4s; }
+  .light-particles span:nth-child(5) { left: 50%; top: 45%; animation-delay: 3.2s; }
+  
+  @keyframes floatParticle {
+    0%, 100% {
+      opacity: 0;
+      transform: translateY(0) scale(0);
+    }
+    10% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(-10px) scale(1);
+    }
+    80% {
+      opacity: 0.8;
+      transform: translateY(-50px) scale(0.8);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-70px) scale(0);
+    }
+  }
+  
+  /* =============================================
+     CONTROLES DEL HERO
+     ============================================= */
+  
+  .hero-controls {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-out;
+  }
+  
+  .hero-controls.hero-controls-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .hero-buttons-container {
+    position: absolute;
+    bottom: 2rem;
+    right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  @media (min-width: 768px) {
+    .hero-buttons-container {
+      bottom: 3rem;
+      right: 3rem;
+      gap: 1rem;
+    }
+  }
+  
+  .hero-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    transition: all 0.3s ease-out;
+  }
+  
+  .hero-btn-icon {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease-out;
+  }
+  
+  .hero-btn-obras:hover .hero-btn-icon {
+    border-color: #0066FF;
+    color: #0066FF;
+    background: rgba(0, 102, 255, 0.15);
+    transform: scale(1.1);
+  }
+  
+  .hero-btn-icon-red {
+    border-color: rgba(255, 51, 51, 0.5);
+    color: #FF6B6B;
+  }
+  
+  .hero-btn-contact:hover .hero-btn-icon-red {
+    border-color: #FF3333;
+    color: #FF3333;
+    background: rgba(255, 51, 51, 0.15);
+    transform: scale(1.1);
+  }
+  
+  .hero-btn-text {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s ease-out;
+  }
+  
+  .hero-btn-text-red {
+    color: rgba(255, 107, 107, 0.8);
+  }
+  
+  .hero-btn-obras:hover .hero-btn-text { color: #0066FF; }
+  .hero-btn-contact:hover .hero-btn-text-red { color: #FF3333; }
+</style>
+
+<!-- ========================================
+     SCRIPTS
+     ======================================== -->
 <script define:vars={{ TOTAL_FRAMES, frameUrls }}>
-  const canvas = document.getElementById('stopmotion-canvas');
-  const ctx = canvas.getContext('2d', { alpha: false });
-  const hero = document.getElementById('hero');
-  const images = [];
-  let currentFrameIndex = -1; // Empezamos en -1 para forzar el primer render
-  let ticking = false;
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth * window.devicePixelRatio;
-    canvas.height = window.innerHeight * window.devicePixelRatio;
-    if (currentFrameIndex !== -1) renderFrame(currentFrameIndex);
+  // Detectar si es móvil
+  const isMobile = window.innerWidth < 768;
+  
+  // Elementos
+  const heroControls = document.getElementById('hero-controls');
+  const mainHeader = document.getElementById('main-header');
+  
+  // =============================================
+  // REVELAR CONTROLES Y HEADER
+  // =============================================
+  function revealControls() {
+    if (heroControls) {
+      heroControls.classList.add('hero-controls-visible');
+    }
+    if (mainHeader) {
+      mainHeader.classList.remove('header-hidden');
+      mainHeader.classList.add('header-visible');
+    }
   }
-
-  async function preloadImages() {
-    const promises = frameUrls.map((url, index) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => {
-          if (img.decode) {
-            img.decode().then(() => resolve(img)).catch(() => resolve(img));
-          } else {
-            resolve(img);
-          }
-        };
-        img.onerror = () => resolve(null);
-        images[index] = img;
+  
+  // =============================================
+  // VERSIÓN MÓVIL: Efecto Encendido
+  // =============================================
+  if (isMobile) {
+    const mobileArtwork = document.getElementById('mobile-artwork');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const mobileGlow = document.getElementById('mobile-glow');
+    const lightParticles = document.getElementById('light-particles');
+    
+    let isLit = false;
+    
+    // Función para "encender" la obra
+    function turnOnArtwork() {
+      if (isLit) return;
+      isLit = true;
+      
+      // Secuencia de encendido escalonada para mayor impacto
+      setTimeout(() => {
+        mobileArtwork?.classList.add('is-on');
+      }, 0);
+      
+      setTimeout(() => {
+        mobileOverlay?.classList.add('is-on');
+      }, 200);
+      
+      setTimeout(() => {
+        mobileGlow?.classList.add('is-on');
+      }, 400);
+      
+      setTimeout(() => {
+        lightParticles?.classList.add('is-on');
+      }, 800);
+    }
+    
+    // Encender después de 2 segundos automáticamente
+    setTimeout(() => {
+      turnOnArtwork();
+      revealControls();
+    }, 2000);
+    
+  } else {
+    // =============================================
+    // VERSIÓN DESKTOP: Stop Motion con Canvas
+    // =============================================
+    const canvas = document.getElementById('stopmotion-canvas');
+    const ctx = canvas?.getContext('2d', { alpha: false });
+    const hero = document.getElementById('hero');
+    const images = [];
+    let currentFrameIndex = -1;
+    let ticking = false;
+    
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
+      if (currentFrameIndex !== -1) renderFrame(currentFrameIndex);
+    }
+    
+    async function preloadImages() {
+      const promises = frameUrls.map((url, index) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => {
+            if (img.decode) {
+              img.decode().then(() => resolve(img)).catch(() => resolve(img));
+            } else {
+              resolve(img);
+            }
+          };
+          img.onerror = () => resolve(null);
+          images[index] = img;
+        });
       });
-    });
-
-    await Promise.all(promises);
-    canvas.classList.remove('opacity-0');
-    updateScroll(); // Renderizar el frame inicial según posición actual
-  }
-
-  function renderFrame(index) {
-    const safeIndex = Math.max(1, Math.min(index, TOTAL_FRAMES));
-    const img = images[safeIndex - 1];
-    
-    if (!img || !img.complete) return;
-
-    const canvasRatio = canvas.width / canvas.height;
-    const imgRatio = img.width / img.height;
-    let drawWidth, drawHeight, x, y;
-
-    if (canvasRatio > imgRatio) {
-      drawWidth = canvas.width;
-      drawHeight = canvas.width / imgRatio;
-      x = 0;
-      y = (canvas.height - drawHeight) / 2;
-    } else {
-      drawWidth = canvas.height * imgRatio;
-      drawHeight = canvas.height;
-      x = (canvas.width - drawWidth) / 2;
-      y = 0;
+      
+      await Promise.all(promises);
+      canvas?.classList.remove('opacity-0');
+      updateScroll();
     }
-
-    ctx.drawImage(img, x, y, drawWidth, drawHeight);
-    currentFrameIndex = safeIndex;
-  }
-
-  function updateScroll() {
-    const heroRect = hero.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
     
-    // Calculamos cuánto del hero ha pasado por pantalla
-    // 0 es el inicio del hero, 1 es cuando el final del hero llega arriba
-    const totalScrollable = hero.offsetHeight - windowHeight;
-    const currentScroll = -heroRect.top;
-    
-    let progress = currentScroll / totalScrollable;
-    
-    // Clamp del progreso entre 0 y 1
-    progress = Math.max(0, Math.min(1, progress));
-    
-    const frameIndex = Math.floor(progress * (TOTAL_FRAMES - 1)) + 1;
-
-    if (frameIndex !== currentFrameIndex) {
-      renderFrame(frameIndex);
+    function renderFrame(index) {
+      if (!canvas || !ctx) return;
+      const safeIndex = Math.max(1, Math.min(index, TOTAL_FRAMES));
+      const img = images[safeIndex - 1];
+      
+      if (!img || !img.complete) return;
+      
+      const canvasRatio = canvas.width / canvas.height;
+      const imgRatio = img.width / img.height;
+      let drawWidth, drawHeight, x, y;
+      
+      if (canvasRatio > imgRatio) {
+        drawWidth = canvas.width;
+        drawHeight = canvas.width / imgRatio;
+        x = 0;
+        y = (canvas.height - drawHeight) / 2;
+      } else {
+        drawWidth = canvas.height * imgRatio;
+        drawHeight = canvas.height;
+        x = (canvas.width - drawWidth) / 2;
+        y = 0;
+      }
+      
+      ctx.drawImage(img, x, y, drawWidth, drawHeight);
+      currentFrameIndex = safeIndex;
     }
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(updateScroll);
-      ticking = true;
+    
+    function updateScroll() {
+      if (!hero) return;
+      const heroRect = hero.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const totalScrollable = hero.offsetHeight - windowHeight;
+      const currentScroll = -heroRect.top;
+      
+      let progress = currentScroll / totalScrollable;
+      progress = Math.max(0, Math.min(1, progress));
+      
+      const frameIndex = Math.floor(progress * (TOTAL_FRAMES - 1)) + 1;
+      
+      if (frameIndex !== currentFrameIndex) {
+        renderFrame(frameIndex);
+      }
+      ticking = false;
     }
-  }, { passive: true });
-
-  // Inicialización
-  resizeCanvas();
-  preloadImages();
-  window.addEventListener('resize', resizeCanvas);
+    
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+    
+    // Inicialización Desktop
+    resizeCanvas();
+    preloadImages();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Revelar controles después de delay
+    setTimeout(revealControls, 2500);
+  }
 </script>

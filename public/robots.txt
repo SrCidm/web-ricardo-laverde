@@ -1,0 +1,21 @@
+# ===========================================
+# Ricardo Laverde Laguna - robots.txt
+# ===========================================
+
+# Permitir que todos los robots indexen el sitio
+User-agent: *
+Allow: /
+
+# Bloquear carpetas que no necesitan indexarse
+Disallow: /_astro/
+Disallow: /_assets/
+
+# Ubicación del sitemap (generado automáticamente por Astro)
+Sitemap: https://ricardolaverde.vercel.app/sitemap-index.xml
+
+# ===========================================
+# Notas:
+# - Este archivo debe estar en public/robots.txt
+# - Se servirá en: https://ricardolaverde.vercel.app/robots.txt
+# - Google lo leerá automáticamente
+# ===========================================

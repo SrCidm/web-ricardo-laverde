@@ -1,0 +1,126 @@
+---
+// Página 404 - No Encontrado
+// Diseño elegante que mantiene la estética del sitio
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+// Detectar idioma desde la URL (si viene de /en/ será inglés)
+const pathname = Astro.url.pathname;
+const isEnglish = pathname.startsWith('/en');
+
+const title = isEnglish ? '404 - Page Not Found' : '404 - Página No Encontrada';
+const description = isEnglish 
+  ? 'The page you are looking for does not exist.' 
+  : 'La página que buscas no existe.';
+
+const content = {
+  es: {
+    code: '404',
+    title: 'Página no encontrada',
+    subtitle: 'La obra que buscas no está en esta galería',
+    description: 'Quizás la página fue movida, eliminada, o nunca existió. Como en el arte cinético, a veces lo que buscamos cambia según la perspectiva.',
+    btnHome: 'Volver al inicio',
+    btnWorks: 'Explorar obras',
+  },
+  en: {
+    code: '404',
+    title: 'Page not found',
+    subtitle: 'The artwork you seek is not in this gallery',
+    description: 'Perhaps the page was moved, deleted, or never existed. As in kinetic art, sometimes what we seek changes depending on perspective.',
+    btnHome: 'Back to home',
+    btnWorks: 'Explore works',
+  },
+};
+
+const t = isEnglish ? content.en : content.es;
+const homePath = isEnglish ? '/en/' : '/';
+const worksPath = isEnglish ? '/en/works' : '/obras';
+---
+
+<Layout title={title} description={description} lang={isEnglish ? 'en' : 'es'}>
+  <Header />
+  
+  <main class="min-h-screen flex items-center justify-center relative overflow-hidden bg-laverde-black">
+    
+    <!-- Fondo decorativo -->
+    <div class="absolute inset-0 opacity-10">
+      <!-- Círculos cinéticos -->
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 border border-laverde-blue rounded-full animate-pulse"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-64 h-64 border border-laverde-red rounded-full animate-pulse" style="animation-delay: 0.5s"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-laverde-white/20 rounded-full"></div>
+    </div>
+    
+    <!-- Contenido -->
+    <div class="relative z-10 text-center px-6 py-24">
+      
+      <!-- Número 404 grande -->
+      <div class="mb-8 relative">
+        <span class="text-[150px] md:text-[200px] lg:text-[250px] font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-laverde-white/20 to-transparent leading-none select-none">
+          {t.code}
+        </span>
+        
+        <!-- Efecto de luz -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-laverde-blue/20 rounded-full blur-3xl"></div>
+      </div>
+      
+      <!-- Texto -->
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-display mb-4 text-laverde-white animate-fade-in">
+        {t.title}
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-laverde-blue font-display italic mb-6 animate-fade-in" style="animation-delay: 0.1s">
+        "{t.subtitle}"
+      </p>
+      
+      <p class="text-laverde-white/60 max-w-lg mx-auto mb-12 leading-relaxed animate-fade-in" style="animation-delay: 0.2s">
+        {t.description}
+      </p>
+      
+      <!-- Botones -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style="animation-delay: 0.3s">
+        <a href={homePath} class="btn-primary">
+          <span class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            {t.btnHome}
+          </span>
+        </a>
+        
+        <a href={worksPath} class="btn-secondary">
+          <span class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            {t.btnWorks}
+          </span>
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
